@@ -27,6 +27,12 @@ func main() {
 			//content, err := ioutil.ReadFile(f.Name())
 			content := importFileReader(f.Name())
 			fmt.Println("File " + f.Name() + " Go File Opened!")
+			for i := range content {
+				if content[i] == ")" {
+					content = content[:i]
+					break
+				}
+			}
 			fmt.Println(content[1:])
 			fmt.Println()
 		}
@@ -44,11 +50,11 @@ func importFileReader(f string) []string {
 	if strings.Contains(dataToString, "import") {
 		//Modify the data string by chopping off the prefix of anything before the string "import" (this will be buggy later if files contain comments with "import" in them...)
 		dataToString = strings.TrimPrefix(dataToString, dataToString[:strings.Index(dataToString, "import")])
-		sarr := strings.Fields(dataToString)
-		if sarr[1] == "(" {
-			return sarr[1:]
+		strArr := strings.Fields(dataToString)
+		if strArr[1] == "(" {
+			return strArr[1:]
 		}
-		return sarr
+		return strArr
 	}
 	return nil
 }
