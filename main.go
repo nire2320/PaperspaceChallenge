@@ -1,10 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+)
 
 func main() {
 
-	fmt.Println("Hello World!")
+	files, err := ioutil.ReadDir(".")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, f := range files {
+		os.Open(f.Name())
+		fmt.Println("File " + f.Name() + " Opened!")
+	}
 
 	//for each file in dir
 	//read file
