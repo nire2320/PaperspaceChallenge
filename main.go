@@ -26,14 +26,14 @@ func main() {
 		if strings.Contains(f.Name(), ".go") {
 			//content, err := ioutil.ReadFile(f.Name())
 			content := importFileReader(f.Name())
-
 			fmt.Println("File " + f.Name() + " Go File Opened!")
-			fmt.Println(f.Name() + " Contents: " + string(content))
+			fmt.Println(content[1:])
+			fmt.Println()
 		}
 	}
 }
 
-func importFileReader(f string) []byte {
+func importFileReader(f string) []string {
 
 	byteData, err := ioutil.ReadFile(f)
 	if err != nil {
@@ -44,10 +44,13 @@ func importFileReader(f string) []byte {
 	if strings.Contains(dataToString, "import") {
 		//Modify the data string by chopping off the prefix of anything before the string "import" (this will be buggy later if files contain comments with "import" in them...)
 		dataToString = strings.TrimPrefix(dataToString, dataToString[:strings.Index(dataToString, "import")])
-
-		return []byte(dataToString)
+		sarr := strings.Fields(dataToString)
+		if sarr[1] == "(" {
+			return sarr[1:]
+		}
+		return sarr
 	}
-	return []byte("0")
+	return nil
 }
 
 //for each file in dir ---> DONE
