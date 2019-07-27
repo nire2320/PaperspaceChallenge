@@ -2,19 +2,19 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
-	//"encoding/json"
 )
 
-//Our JSON data structure
-/*type JSONFile struct {
-	filename string
-	packages []string
-}*/
+//MyFile data structure for JSON encoding
+type MyFile struct {
+	Filename string
+	Packages []string
+}
 
 func main() {
 
@@ -28,14 +28,22 @@ func main() {
 			//content, err := ioutil.ReadFile(f.Name())
 			content := importFileReader(f.Name())
 
+			//Iterate high to low so that when we append the new content array, we keep positions and don't go out of bounds
 			for i := len(content) - 1; i >= 0; i-- {
 				if content[i] == "import" || content[i] == "(" || content[i] == ")" {
 					content = append(content[:i], content[i+1:]...)
 				}
 			}
-			fmt.Println("File " + f.Name() + " Go File Opened!")
+			newFile := MyFile{
+				Filename: f.Name(),
+				Packages: content,
+			}
 
-			fmt.Println(content)
+			b, err := json.Marshal(newFile)
+			if err != nil {
+				log.Fatal(err)
+			}
+			os.Stdout.Write(b)
 			fmt.Println()
 		}
 	}
