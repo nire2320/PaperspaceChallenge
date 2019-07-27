@@ -18,6 +18,7 @@ type MyFile struct {
 
 func main() {
 
+	//Currently reading the working project folder, this can be changed to any specific folder the user requires
 	files, err := ioutil.ReadDir(".")
 	if err != nil {
 		log.Fatal(err)
@@ -50,6 +51,7 @@ func main() {
 	}
 }
 
+// ImportFileReader will read in a given filename (string) and output a content string array containing packages imported
 func importFileReader(f string) []string {
 
 	doubleNewline := []byte{13, 10, 13, 10}              //"\r\n\r\n" byte characters (carriage return + newline)
