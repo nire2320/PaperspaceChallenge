@@ -28,7 +28,7 @@ func main() {
 			//content, err := ioutil.ReadFile(f.Name())
 			content := importFileReader(f.Name())
 
-			//Iterate high to low so that when we append the new content array, we keep positions and don't go out of bounds
+			//Iterate high to low so that when we append the new content array, we keep positions correct and don't go out of bounds
 			for i := len(content) - 1; i >= 0; i-- {
 				if content[i] == "import" || content[i] == "(" || content[i] == ")" {
 					content = append(content[:i], content[i+1:]...)
@@ -66,7 +66,7 @@ func importFileReader(f string) []string {
 	if strings.Contains(string(byteData), "import") {
 
 		//We're buffering/checking the first 10 bytes in order to check if comments are just at the beginning of the file
-		//If our files contain the word "import" in the beginning of the file, it will break, but trimming out all initial comments removes this possibility
+		//If our files contain the word "import" in a comment at the beginning of the file, it will break, but trimming out all initial comments removes this possibility
 		if bytes.Contains(byteData[:10], commentStart) {
 			byteData = bytes.TrimPrefix(byteData, byteData[:bytes.Index(byteData, commentEnd)])
 		}
