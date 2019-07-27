@@ -1,5 +1,5 @@
 /*
-	Testing multiple packages
+	DoubleImport tests somewhat odd syntax for package loading in golang
 */
 
 package main
@@ -7,7 +7,7 @@ package main
 import "fmt"
 import "math"
 
-func doubleImport() {
+func testDoubleImport() {
 
 	fmt.Println("Hello World!")
 	fmt.Println(math.Abs(-1))

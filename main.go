@@ -34,6 +34,7 @@ func main() {
 					content = append(content[:i], content[i+1:]...)
 				}
 			}
+
 			newFile := MyFile{
 				Filename: f.Name(),
 				Packages: content,
@@ -51,8 +52,10 @@ func main() {
 
 func importFileReader(f string) []string {
 
-	doubleNewline := []byte{13, 10, 13, 10}              //"\n\n" byte characters
+	doubleNewline := []byte{13, 10, 13, 10}              //"\r\n\r\n" byte characters (carriage return + newline)
 	importString := []byte{105, 109, 112, 111, 114, 116} //"import" byte characters
+	commentStart := []byte{47, 42}                       // the "/*" beginning characters of a comment
+	commentEnd := []byte{42, 47}                         // the "*/" end characters of a comment
 
 	file, err := os.Open(f)
 	byteData, err := ioutil.ReadAll(file)
@@ -61,7 +64,14 @@ func importFileReader(f string) []string {
 	}
 
 	if strings.Contains(string(byteData), "import") {
-		//Modify the byte data by chopping off the prefix of anything before the string "import" (this will be buggy if files contain comments with "import" in them...)
+
+		//We're buffering/checking the first 10 bytes in order to check if comments are just at the beginning of the file
+		//If our files contain the word "import" in the beginning of the file, it will break, but trimming out all initial comments removes this possibility
+		if bytes.Contains(byteData[:10], commentStart) {
+			byteData = bytes.TrimPrefix(byteData, byteData[:bytes.Index(byteData, commentEnd)])
+		}
+
+		//Modify the byte data by chopping off the prefix of anything before the string "import"
 		byteData = bytes.TrimPrefix(byteData, byteData[:bytes.Index(byteData, importString)])
 
 		//Modify the byte data by chopping off the suffix of anything after a double newline character (13 10 == "\n")
@@ -73,14 +83,3 @@ func importFileReader(f string) []string {
 	}
 	return nil
 }
-
-//for each file in dir ---> DONE
-//read file ---> DONE
-//list all packages and filename ---> DONE
-//output JSON object with Filename and all imported packages
-/* EX :
-{
-	"Filename":"Filename1",
-	"Packages": ["fmt", "math", "string"]
-}
-*/

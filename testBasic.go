@@ -1,12 +1,12 @@
 /*
-	Temporary file created for testing purposes
+	Base test file for testing packages
 */
 
 package main
 
 import "fmt"
 
-func temp() {
+func testBasic() {
 
 	fmt.Println("Hello World!")
 
